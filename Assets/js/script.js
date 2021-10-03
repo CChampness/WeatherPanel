@@ -1,7 +1,14 @@
 var AppID = "acafba783f22a6fd98819aec5579ae53"
-var latlon = "lat=34.5773206&lon=-83.3323851";
-var apiURL = "https://api.openweathermap.org/data/2.5/onecall?"+
-             latlon+"&exclude=alerts,minutely&appid=" + AppID;
+var latlon = ""; // = "lat=34.5773206&lon=-83.3323851";
+var apiURL = ""; // = "https://api.openweathermap.org/data/2.5/onecall?"+
+            // latlon+"&exclude=alerts,minutely&appid=" + AppID;
+var cityName = "";
+
+var cityFormEl = document.querySelector('#city-form');
+var cityButtonsEl = document.querySelector('#city-buttons');
+var cityNameEl = document.querySelector('#cityname');
+var cityContainerEl = document.querySelector('#city-container');
+var citySearch = document.querySelector('#city-search');
 
 var tempEl = $("#temp");
 var windEl = $("#wind");
@@ -9,46 +16,64 @@ var humEl = $("#humidity");
 var uviEl = $("#uvindex");
 
 
-function logData(data){
+function logWeatherData(data){
   console.log(data);
-  // console.log(data.ok);
-  // console.log(data.current);
-  console.log(data.current.temp);
-  console.log(data.current.uvi);
-  console.log(data.current.humidity);
-  console.log(data.current.wind_speed);
   // Convert Kelvin to Fahrenheit
   var temp = Math.round((data.current.temp - 273.15)*9/5+32);
   tempEl.text(temp);
   windEl.text(data.current.wind_speed);
   humEl.text(data.current.humidity);
   uviEl.text(data.current.uvi);
+  // Forecasts for 5 days ahead
+  for (i = 1; i <= 5; i++) {
+    var temp = (Math.round(data.daily[i].temp.day - 273.15)*9/5+32);
+    console.log(temp,
+                data.daily[i].wind_speed,
+                data.daily[i].humidity);
+    document.querySelector("#forecast-"+i+" .date").textContent = moment().add(i,"day").format("L");
+    document.querySelector("#forecast-"+i+" .temp").textContent = temp;
+    document.querySelector("#forecast-"+i+" .wind").textContent = data.daily[i].wind_speed;
+    document.querySelector("#forecast-"+i+" .humidity").textContent = data.daily[i].humidity;
+  }
 }
 
 var getWeather = function () {
   console.log("Fetching, I promise...");
-  fetch(apiURL)
+  console.log("in getWeather, apiURL:"+apiURL);
+  fetch("https://api.openweathermap.org/data/2.5/onecall?"+
+  latlon+"&exclude=alerts,minutely&appid=" + AppID)
   .then(function (response) {
     if (!response.ok) {
       throw response.json();
     }
-
-    return response.json();
+  return response.json();
   })
   .then(function (res) {
-    logData(res);
+    logWeatherData(res);
   })
   .catch(function (error) {
     console.error(error);
   });
 }
 
-getWeather();
+function buildApiURL(res) {
+  var lat = res.coord.lat;
+  var lon = res.coord.lon;
+  latlon = "lat="+lat+"&lon="+lon;
+  apiURL = "https://api.openweathermap.org/data/2.5/onecall?"+
+  latlon+"&exclude=alerts,minutely&appid=" + AppID;
+  console.log("buildApiURL...apiURL"+apiURL);
+  citySearch.textContent = res.name+", "+res.sys.country+" ("+
+                 moment().format("dddd MMMM Do, YYYY")+")";
+  getWeather();
+}
 
-getLatLon(cityName) {
-  var cityApiQuery = "api.openweathermap.org/data/2.5/weather?q="+cityName+"&appid="+AppID;
+var getLatLon = function() {
     console.log("Fetching, I promise...");
-  fetch(apiURL)
+    console.log("cityName:"+cityName);
+  var cityApiQuery = "https://api.openweathermap.org/data/2.5/weather?q="+
+                     cityName+"&appid="+AppID;
+  fetch(cityApiQuery)
   .then(function (response) {
     if (!response.ok) {
       throw response.json();
@@ -57,37 +82,27 @@ getLatLon(cityName) {
     return response.json();
   })
   .then(function (res) {
-    logData(res);
+    console.log(res);
+    buildApiURL(res);
   })
   .catch(function (error) {
+    cityNameEl.value = "City name not found. Try City,State,Country";
     console.error(error);
   });
-}
-
-
-var cityFormEl = document.querySelector('#city-form');
-var cityButtonsEl = document.querySelector('#city-buttons');
-var cityNameEl = document.querySelector('#cityname');
-var cityContainerEl = document.querySelector('#city-container');
-var citySearchTerm = document.querySelector('#city-search-term');
-
-function getCity(cityName) {
-  citySearchTerm.textContent = cityName;
 }
 
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
-  var cityName = cityNameEl.value.trim();
+  cityName = cityNameEl.value.trim();
+  // citySearch.textContent = cityName
 console.log(cityName);
-  if (cityName) {
-    getCity(cityName);
-    getLatLon(cityName);
 
-    cityNameEl.textContent = '';
+  if (cityName) {
+    getLatLon(cityName);
     cityNameEl.value = '';
   } else {
-    alert('City name not found');
+    cityNameEl.value = "City name not found. Try City,State,Country";
   }
 };
 
@@ -107,7 +122,7 @@ var displayRepos = function (repos, searchTerm) {
     return;
   }
 
-  citySearchTerm.textContent = searchTerm;
+  citySearch.textContent = searchTerm;
 
   for (var i = 0; i < repos.length; i++) {
     // var repoName = repos[i].owner.login + '/' + repos[i].name;
