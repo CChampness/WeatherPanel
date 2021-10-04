@@ -1,7 +1,6 @@
 var AppID = "acafba783f22a6fd98819aec5579ae53"
-var latlon = ""; // = "lat=34.5773206&lon=-83.3323851";
-var apiURL = ""; // = "https://api.openweathermap.org/data/2.5/onecall?"+
-            // latlon+"&exclude=alerts,minutely&appid=" + AppID;
+var latlon = "";
+var apiURL = "";
 var cityName = "";
 
 var cityFormEl = document.querySelector('#city-form');
@@ -10,11 +9,26 @@ var cityNameEl = document.querySelector('#cityname');
 var cityContainerEl = document.querySelector('#city-container');
 var citySearch = document.querySelector('#city-search');
 
+var cityArr = [];
+
 var tempEl = $("#temp");
 var windEl = $("#wind");
 var humEl = $("#humidity");
 var uviEl = $("#uvindex");
 
+function updateStorage(city) {
+  cityArr = JSON.parse(localStorage.getItem("weatherList"));
+  if (!cityArr) {
+    cityArr = [];
+  }
+  if (!cityArr.includes(city)) {
+    cityArr.unshift(city);
+  }
+  localStorage.setItem("weatherList", JSON.stringify(cityArr));
+  for(i = 0; i < cityArr.length; i++) {
+    
+  }
+}
 
 function logWeatherData(data){
   console.log(data);
@@ -26,6 +40,22 @@ function logWeatherData(data){
   uviEl.text(data.current.uvi);
   // Forecasts for 5 days ahead
   for (i = 1; i <= 5; i++) {
+    var weather = data.daily[i].weather[0].main;
+    console.log("weather:"+weather);
+    var icon;
+    if (weather === "Clouds") {
+      icon = "cloudy";
+    } else if (weather === "Rain") {
+      icon = "rainy";
+    } else if (weather === "Snow") {
+      icon = "snowy";
+    } else {
+      icon = "sunny";
+    }
+    var weatherEl = document.querySelector("#forecast-"+i);
+    weatherEl.insertAdjacentHTML("afterbegin",
+               `<img src="./Assets/images/`+icon+`.ico" alt="`+icon+`"></img>`);
+    console.log(`<img src="./Assets/images/`+icon+`.ico" alt="`+icon+`"></img>`);
     var temp = (Math.round(data.daily[i].temp.day - 273.15)*9/5+32);
     console.log(temp,
                 data.daily[i].wind_speed,
@@ -65,6 +95,7 @@ function buildApiURL(res) {
   console.log("buildApiURL...apiURL"+apiURL);
   citySearch.textContent = res.name+", "+res.sys.country+" ("+
                  moment().format("dddd MMMM Do, YYYY")+")";
+  updateStorage(res.name);
   getWeather();
 }
 
@@ -107,10 +138,10 @@ console.log(cityName);
 };
 
 var buttonClickHandler = function (event) {
-  var language = event.target.getAttribute('data-language');
+  var city = event.target.getAttribute('data-city');
 
-  if (language) {
-    getFeaturedRepos(language);
+  if (city) {
+    getFeaturedRepos(city);
 
     cityContainerEl.textContent = '';
   }

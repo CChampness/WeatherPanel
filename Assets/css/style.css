@@ -92,7 +92,9 @@
   }
   
   img {
-    opacity: 0.5;
+    opacity: 0.4;
+    width: 118px;
+    height: 138px;
   }
 
   #forecast-1,
