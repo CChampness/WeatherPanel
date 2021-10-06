@@ -13,19 +13,17 @@
 
 <body class="flex-column min-100-vh">
   <header>
-    <h1 class="app-title">Weather Panel</h1>
-    <p>Search for a city's weather
-    </p>
+    <h1 class="title">Weather Panel</h1>
+    <p>Search for a city's weather</p>
   </header>
 
-
   <main class="flex-row justify-space-between">
-    <div class="col-12 col-md-4">
+    <div class="col-12 col-sm-4 col-md-4 col-lg-4">
 
       <div class="card">
         <h3 class="card-header text-uppercase">Search By City</h3>
         <form id="city-form" class="card-body">
-          <label class="form-label" for="username">City name</label>
+          <label class="form-label">City name</label>
           <input name="cityname" id="cityname" type="text" autofocus="true" class="form-input" />
           <button type="submit" class="btn">Get City</button>
         </form>
@@ -34,81 +32,54 @@
       <div class="card">
         <h3 class="card-header text-uppercase">Recent Searches</h3>
         <div id="city-buttons" class="card-body">
-          <button onclick="btnHdlr('city1')" class="btn">City1</button>
-          <button onclick="btnHdlr('city2')" class="btn">City2</button>
-          <button onclick="btnHdlr('city3')" class="btn">City3</button>
-          <button onclick="btnHdlr('city4')" class="btn">City4</button>
-          <button onclick="btnHdlr('city5')" class="btn">City5</button>
+          <!-- Buttons go here, inserted by javascript -->
         </div>
       </div>
     </div>
 
-
-    <div class="col-12 col-md-8">
+    <div class="col-12 col-sm-4 col-md-8 col-lg-8">
       <section id="detail-box" class="card">
-        <h2>Showing Weather for: <span id="city-search"></span></h2>
+        <h2>Current Weather for:</h2>
+        <h2 id="city-search"></h2>
+        <h2 id="current-date"></h2>
         <table>
           <tr>
-            <td>Temp</td>
+            <td>Temp:</td>
+            <td>......</td>
             <td id="temp"></td>
+            <td>&nbsp</td>
+            <td>Timezone:</td>
+            <td>......</td>
+            <td id="timezone"></td>
           </tr>
           <tr>
-            <td>Wind</td>
+            <td>Wind:</td>
+            <td>......</td>
             <td id="wind"></td>
-          </tr>
+            <td></td>
+            <td>UV Index</td>
+            <td>......</td>
+            <td>
+              <div id="uvindex"></div>
+            </td>
+         </tr>
           <tr>
             <td>Humidity</td>
+            <td>......</td>
             <td id="humidity"></td>
           </tr>
           <tr>
-            <td>UV Index</td>
-            <td id="uvindex"></td>
+            <td>Conditions</td>
+            <td>......</td>
+            <td id="condx"></td>
+            <td id="currentIcon"></td>
           </tr>
         </table>
       </section>
-      5-day forecast:
+      <h2 id="forecast-5day">5-day forecast for: </h2>
+      <h2 id="city-5day"></h2>
       <section id="forecast-box" class="card">
-        <div id="forecast-1" class="card">
-          <!-- <img src="./Assets/images/cloudy.ico" alt="Cloudy"> -->
-          <ul>
-          <li>Date:<span class="date"></span></li>
-          <li>Temp:<span class="temp"></span></li>
-          <li>Wind speed:<span class="wind"></span></li>
-          <li>Humidity:<span class="humidity"></span></li>
-          </ul>
-        </div>
-        <div id="forecast-2" class="card">
-          <ul>
-            <li>Date:<span class="date"></span></li>
-            <li>Temp:<span class="temp"></span></li>
-            <li>Wind speed:<span class="wind"></span></li>
-            <li>Humidity:<span class="humidity"></span></li>
-            </ul>
-          </div>
-        <div id="forecast-3" class="card">
-          <ul>
-            <li>Date:<span class="date"></span></li>
-            <li>Temp:<span class="temp"></span></li>
-            <li>Wind speed:<span class="wind"></span></li>
-            <li>Humidity:<span class="humidity"></span></li>
-            </ul>
-          </div>
-        <div id="forecast-4" class="card">
-          <ul>
-            <li>Date:<span class="date"></span></li>
-            <li>Temp:<span class="temp"></span></li>
-            <li>Wind speed:<span class="wind"></span></li>
-            <li>Humidity:<span class="humidity"></span></li>
-            </ul>
-          </div>
-        <div id="forecast-5" class="card">
-          <ul>
-            <li>Date:<span class="date"></span></li>
-            <li>Temp:<span class="temp"></span></li>
-            <li>Wind speed:<span class="wind"></span></li>
-            <li>Humidity:<span class="humidity"></span></li>
-            </ul>
-          </div>
+        <!-- 5-day forecast cards go here, inserted by javascript -->
       </section>
   </main>
 
